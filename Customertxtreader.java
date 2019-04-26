@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package TextReaders;
 
 import Data.Orders;
@@ -10,13 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-/**
- *
- * @author Crimson
- */
 public class Customertxtreader {
 
     private String filename;
@@ -26,6 +15,7 @@ public class Customertxtreader {
         this.filename = filename;
         ordersarr = new ArrayList<>();
         extract(filename);
+        displayorders();
     }
 
     public void extract(String file) {
@@ -56,7 +46,7 @@ public class Customertxtreader {
     
     public void displayorders(){
         for (int i = 0; i < ordersarr.size(); i++) {
-            System.out.println(ordersarr.get(i).toString(i));
+            System.out.println(ordersarr.get(i).toString(i) + "\n");
         }
     }
 }
