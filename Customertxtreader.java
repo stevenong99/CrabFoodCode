@@ -1,52 +1,58 @@
-package TextReaders;
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package TxtReaders;
 
 import Data.Orders;
+import Data.Queue;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.Scanner;
 
+/**
+ *
+ * @author TAN JIA QIN (WIF180073)
+ */
 public class Customertxtreader {
 
     private String filename;
-    private ArrayList<Orders> ordersarr;
+    Queue<Orders> orderList = new Queue<>();
 
     public Customertxtreader(String filename) {
         this.filename = filename;
-        ordersarr = new ArrayList<>();
-        extract(filename);
-        displayorders();
+        read();
     }
 
-    public void extract(String file) {
-        String[] info;
-        String text = "";
-        
+    public void read() {
         try {
             Scanner s = new Scanner(new FileInputStream(filename));
-            while (s.hasNextLine()) {
-                text = text + s.nextLine() + ";";
+            Orders newOrder;
+            while (s.hasNext()) {
+                int orderTime = s.nextInt();
+                s.nextLine();
+                String restName = s.nextLine();
+                String dishOrdered = s.nextLine();
+                newOrder = new Orders(orderTime, restName, dishOrdered);
+                orderList.enqueue(newOrder);
+                if (s.hasNextLine()) {
+                    s.nextLine();
+                }
             }
+
         } catch (FileNotFoundException ex) {
-            System.out.println("File not found.");
+            System.out.println("File is not found in the folder!");
         }
-//        System.out.println("Extracted string: " + text);
-        
-        info = text.split(";");
-        for (int i = 0; i < info.length; i+=4) {
-            Orders newOrder = new Orders(Integer.parseInt(info[i]), info[i+1], info[i+2]);
-            ordersarr.add(newOrder);
+
+    }
+
+    public void displayExtractedInformation() {
+        int counter = 1;
+        for (int i = 0; i < orderList.getSize(); i++) {
+            System.out.println("Order " + counter + " : \n" + orderList.getElement(i).toString());
+            counter++;
         }
     }
 
-    public ArrayList<Orders> getOrdersarr() {
-        return ordersarr;
-    }
-
-    
-    public void displayorders(){
-        for (int i = 0; i < ordersarr.size(); i++) {
-            System.out.println(ordersarr.get(i).toString(i) + "\n");
-        }
-    }
 }
