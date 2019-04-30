@@ -16,7 +16,6 @@ public class Inputtxtreader {
     public Inputtxtreader(String filename) {
         this.filename = filename;
         extract(filename);
-        this.newMap = new Map(restlist);
     }
 
     public void extract(String filename) {
@@ -47,18 +46,53 @@ public class Inputtxtreader {
                     scan.nextLine();
                 }
             }
-            System.out.println("Welcome to CrabFood. We have the following restaurants:");
-            for (int i = 0; i < restlist.length; i++) {
-                System.out.println(restlist[i]);
-            }
-        }catch (FileNotFoundException e) {
+            display();
+
+        } catch (FileNotFoundException e) {
             System.out.println("The file cannot be found.");
         }
+    }
+
+    public int getDishPrepTime(String resname, String dishname) {
+        int i = 0;
+        while (i < restlist.length) {
+            if (resname.equals(restlist[i].getName())) {
+                break;
+            }
+            i++;
+        }
+        return restlist[i].getTime(dishname);
+    }
+
+    public int getShortestDeliveryTime(int customerlocationX, int customerlocationY, String resname) {
+        int i = 0;
+        while (i < restlist.length) {
+            if (resname.equals(restlist[i].getName())) {
+                break;
+            }
+            i++;
+        }
+        return restlist[i].closestBranch(customerlocationX, customerlocationY);
+    }
+
+    public void display() {
+        System.out.println("Welcome to CrabFood. We have the following restaurants:");
+        for (int i = 0; i < restlist.length; i++) {
+            System.out.println(restlist[i]);
+        }
+    }
+
+    //Getters
+    public String getFilename() {
+        return filename;
+    }
+
+    public Map getNewMap() {
+        return newMap;
     }
 
     public Restaurants[] getRestlist() {
         return restlist;
     }
-    
-    
+
 }
