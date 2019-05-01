@@ -48,7 +48,6 @@ public class Customertxtreader {
             int timetakentocook = input.getDishPrepTime(resname, dishname);
             int deliverytime = input.getShortestDeliveryTime(customerlocationX, customerlocationY, resname);
             Orders newOrder = new Orders(arrivaltime, resname, dishname, timetakentocook, deliverytime, customerlocationX, customerlocationY);
-            queue.enqueue(text);
             ordersarr.add(newOrder);
         }
     }
