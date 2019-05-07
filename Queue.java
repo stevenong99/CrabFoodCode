@@ -12,13 +12,17 @@ import java.util.LinkedList;
  * @author Crimson
  */
 public class Queue<Orders> {
+
     LinkedList<Orders> list;
-    
+
+    void clear() {
+        list.clear();
+    }
+
     public class Node {
+
         String type;
         int priority;
-        
-        
     }
 
     public Queue() {
@@ -63,7 +67,7 @@ public class Queue<Orders> {
     }
 
     public String toString() {
-        String s = "Queue contains : ";
+        String s = "";
         for (int i = 0; i < list.size(); i++) {
             if (i == list.size() - 1) {
                 s = s + list.get(i) + ".";

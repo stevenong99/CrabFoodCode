@@ -1,5 +1,6 @@
 package TextReaders;
 
+import Data.Branch;
 import Data.Dishes;
 import Data.Restaurants;
 import Map.Map;
@@ -11,25 +12,28 @@ public class Inputtxtreader {
 
     private String filename;
     private Restaurants[] restlist;
-    private Map newMap;
+    private Branch[] branchList;
 
     public Inputtxtreader(String filename) {
         this.filename = filename;
-        extract(filename);
+        extractInput(filename);
     }
 
-    public void extract(String filename) {
+    public void extractInput(String filename) {
         try {
             Scanner scan = new Scanner(new FileInputStream(filename));
             restlist = new Restaurants[3];
+            //branchList = new Branch [3];
             int counter = 0;
             while (scan.hasNext()) {
                 {
                     String name = scan.nextLine();
                     int[][] branches = new int[3][2];
+                    branchList = new Branch [3];
                     for (int i = 0; i < branches.length; i++) {
                         branches[i][0] = scan.nextInt();
                         branches[i][1] = scan.nextInt();
+                        branchList[i] = new Branch (branches[i][0],branches[i][1]);
                         scan.nextLine();
                     }
                     Dishes[] dishes = new Dishes[3];
@@ -39,7 +43,8 @@ public class Inputtxtreader {
                             scan.nextLine();
                         }
                     }
-                    restlist[counter] = new Restaurants(name, branches, dishes);
+                    restlist[counter] = new Restaurants(name, branchList, dishes);
+                    //System.out.println(restlist[counter].toString());
                     counter++;
                 }
                 if (scan.hasNextLine()) {
@@ -87,12 +92,15 @@ public class Inputtxtreader {
         return filename;
     }
 
-    public Map getNewMap() {
-        return newMap;
-    }
 
     public Restaurants[] getRestlist() {
         return restlist;
     }
+
+    public Branch[] getBranchList() {
+        return branchList;
+    }
+    
+    
 
 }
