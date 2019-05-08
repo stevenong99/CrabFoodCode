@@ -1,6 +1,7 @@
 package TextReaders;
 
 import Data.Branch;
+import Data.Dishes;
 import Data.Orders;
 import Data.Queue;
 import Data.Restaurants;
@@ -15,22 +16,67 @@ public class Customertxtreader {
     private String customerfilename, inputfilename;
     private ArrayList<Orders> ordersarr;
     private Queue<String> queue;
-    private Inputtxtreader input;
     private Map newMap;
-    
     private Restaurants restaurant;
+    private String filename;
+    private ArrayList<Restaurants> restlist;
+    private ArrayList<Branch> branchlist;
+    private ArrayList<Dishes> disheslist;
     
     public Customertxtreader(String customerfilename, String inputfilename) {
-        this.input = new Inputtxtreader(inputfilename);
         this.customerfilename = customerfilename;
         this.ordersarr = new ArrayList<>();
-        extract(customerfilename);
+        extractInput(inputfilename);
+        extractCustomer(customerfilename);
         displayorders();
-        this.newMap = new Map(input.getRestlist());
         this.queue = new Queue<>();
     }
     
-    public void extract(String file) {
+    public void extractInput(String filename) {
+        try {
+            Scanner scan = new Scanner(new FileInputStream(filename));
+            restlist = new ArrayList<>();
+            Dishes newDishes;
+            
+            while (scan.hasNext()) {
+                {
+                    String name = scan.nextLine();
+                    int[][] branches = new int[1][2];
+                    branchlist = new ArrayList<>();
+                    
+                    while (scan.hasNextInt()==true)
+                    {
+                        branches[0][0] = scan.nextInt();
+                        branches[0][1] = scan.nextInt();
+                        branchlist.add(new Branch (branches[0][0],branches[0][1]));
+                        scan.nextLine();
+                    }
+                    
+                    disheslist = new ArrayList<>();
+                    for (int i = 0; i < 3; i++) {
+                        newDishes = new Dishes(scan.nextLine(), scan.nextInt());
+                        disheslist.add(newDishes);
+                        if (scan.hasNextLine()) {
+                            scan.nextLine();
+                        }
+                    }
+                    restlist.add(new Restaurants(name, branchlist, disheslist));
+                }
+                if (scan.hasNextLine()) {
+                    scan.nextLine();
+                }
+            }
+            
+            for (int i = 0; i < restlist.size(); i++) {
+                System.out.println(restlist.get(i));
+            }
+            
+        } catch (FileNotFoundException e) {
+            System.out.println("The file cannot be found.");
+        }
+    }
+    
+    public void extractCustomer(String file) {
         String[] info;
         String text = "";
         
@@ -48,11 +94,15 @@ public class Customertxtreader {
             String resname = info[i + 1], dishname = info[i + 2];
             int customerlocationX = 0, customerlocationY = 0;
             int arrivaltime = Integer.parseInt(info[i]);
-            int timetakentocook = input.getDishPrepTime(resname, dishname);
-            int deliverytime = getDeliveryTime(resname, dishname, customerlocationX, customerlocationY);
-            Orders newOrder = new Orders(arrivaltime, resname, dishname, timetakentocook, deliverytime, customerlocationX, customerlocationY);
-            takeOrder(newOrder);
+            takeOrder(resname, dishname, arrivaltime, customerlocationX, customerlocationY);
         }
+    }
+    
+    public void takeOrder(String restName, String dishName, int arrivalTime, int customerLocationX, int customerLocationY) {
+        Orders newOrder = new Orders(restName, dishName, arrivalTime, customerLocationX, customerLocationY, restlist);
+        Branch branchTakeOrder = newOrder.determine(restName, dishName, customerLocationX, customerLocationY);
+        ordersarr.add(newOrder);
+        branchTakeOrder.acceptOrder(newOrder);
     }
     
     public ArrayList<Orders> getOrdersarr() {
@@ -64,191 +114,47 @@ public class Customertxtreader {
             System.out.println(ordersarr.get(i).toString(i) + "\n");
         }
     }
-
-//    public void takeOrder(String resname, Orders newOrder, int customerlocationX, int customerlocationY) {
-//        Restaurants[] restlist = input.getRestlist();
-//        Branch[] branchlist;
-//        ArrayList<Branch> zeroOrderBranch = new ArrayList<>();
-//        Branch branchTakeOrder = null;
-//        int distance;
-//        int minDistance;
-//
-//        for (int i = 0; i < restlist.length; i++) {
-//            if (restlist[i].getName().equals(resname)) {
-//                branchlist = restlist[i].getBranches();
-//
-//                for (int j = 0; j < branchlist.length; j++) {
-//                    if (branchlist[j].getTotalOrder() == 0) {
-//                        zeroOrderBranch.add(branchlist[j]);
-//                    }
-//                }
-//
-//                if (zeroOrderBranch.isEmpty() == true) {
-//                    branchTakeOrder = branchlist[0];
-//                    distance = branchTakeOrder.getDistance(customerlocationX, customerlocationY);
-//                    minDistance = distance;
-//                    for (int j = 1; j < branchlist.length; j++) {
-//                        distance = branchlist[j].getDistance(customerlocationX, customerlocationY);
-//                        if (distance < minDistance && branchlist[j].getProcessTimeLeft() <= branchTakeOrder.getProcessTimeLeft()) {
-//                            branchTakeOrder = branchlist[j];
-//                            minDistance = distance;
-//                        }
-//                    }
-//                } else if (zeroOrderBranch.isEmpty() != true) {
-//                    branchTakeOrder = zeroOrderBranch.get(0);
-//                    distance = branchTakeOrder.getDistance(customerlocationX, customerlocationY);
-//                    minDistance = distance;
-//                    if (zeroOrderBranch.size() == 1) {
-//                        branchTakeOrder = zeroOrderBranch.get(0);
-//                        distance = branchTakeOrder.getDistance(customerlocationX, customerlocationY);
-//                        minDistance = distance;
-//                    } else {
-//                        for (int j = 1; j < zeroOrderBranch.size(); j++) {
-//                            distance = zeroOrderBranch.get(j).getDistance(customerlocationX, customerlocationY);
-//                            if (distance < minDistance && zeroOrderBranch.get(j).getProcessTimeLeft() <= branchTakeOrder.getProcessTimeLeft()) {
-//                                branchTakeOrder = zeroOrderBranch.get(j);
-//                                minDistance = distance;
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        System.out.println(resname + " @ " + branchTakeOrder.getLocation() + " takes the order : " + newOrder.getDishname());
-//        branchTakeOrder.acceptOrder(newOrder);
-//    }
-//    public int getDeliveryTime(String resname, int customerlocationX, int customerlocationY) {      // DETERMINE WHICH BRANCH TO TAKE ORDER
-//        Restaurants[] restlist = input.getRestlist();
-//        Branch[] branchlist;
-//        ArrayList<Branch> zeroOrderBranch = new ArrayList<>();
-//        Branch branchTakeOrder = null;
-//        int distance;
-//        int minDistance;
-//        int deliveryTime = 0;
-//
-//        for (int i = 0; i < restlist.length; i++) {
-//            if (restlist[i].getName().equals(resname)) {
-//                branchlist = restlist[i].getBranches();
-//
-//                for (int j = 0; j < branchlist.length; j++) {
-//                    if (branchlist[j].getTotalOrder() == 0) {
-//                        zeroOrderBranch.add(branchlist[j]);
-//                    }
-//                }
-//
-//                if (zeroOrderBranch.isEmpty() == true) {
-//                    branchTakeOrder = branchlist[0];
-//                    distance = branchTakeOrder.getDistance(customerlocationX, customerlocationY);
-//                    minDistance = distance;
-//                    deliveryTime = distance;
-//                    for (int j = 1; j < branchlist.length; j++) {
-//                        distance = branchlist[j].getDistance(customerlocationX, customerlocationY);
-//                        if (distance < minDistance && branchlist[j].getProcessTimeLeft() <= branchTakeOrder.getProcessTimeLeft()) {
-//                            branchTakeOrder = branchlist[j];
-//                            minDistance = distance;
-//                            deliveryTime = branchTakeOrder.getCoordinateX() + branchTakeOrder.getCoordinateY();
-//                        }
-//                    }
-//                } else if (zeroOrderBranch.isEmpty() != true) {
-//                    branchTakeOrder = zeroOrderBranch.get(0);
-//                    distance = branchTakeOrder.getDistance(customerlocationX, customerlocationY);
-//                    minDistance = distance;
-//                    deliveryTime = distance;
-//                    if (zeroOrderBranch.size() == 1) {
-//                        branchTakeOrder = zeroOrderBranch.get(0);
-//                        distance = branchTakeOrder.getDistance(customerlocationX, customerlocationY);
-//                        minDistance = distance;
-//                        deliveryTime = distance;
-//                    } else {
-//                        for (int j = 1; j < zeroOrderBranch.size(); j++) {
-//                            distance = zeroOrderBranch.get(j).getDistance(customerlocationX, customerlocationY);
-//                            if (distance < minDistance && zeroOrderBranch.get(j).getProcessTimeLeft() <= branchTakeOrder.getProcessTimeLeft()) {
-//                                branchTakeOrder = zeroOrderBranch.get(j);
-//                                minDistance = distance;
-//                                deliveryTime = distance;
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        return deliveryTime;
-//    }
-    public Branch determine(String resname, String dishname, int customerlocationX, int customerlocationY) {
-        int deliveryTime = 0;
-        Restaurants[] restList = input.getRestlist();
-        Branch[] branchList;
-        int totalTimeProcessInc;            // Branch's total time left to process all orders including newOrder
-        Branch branchTakeOrder = null;
-        ArrayList<Branch> zeroOrderBranch = new ArrayList<>();;
-        int minimum;
-        int distance = 0;
-        int MinDistance = 0;
-        
-        for (int i = 0; i < restList.length; i++) {
-            if (restList[i].getName().equals(resname)) {
-                branchList = restList[i].getBranches();
-                for (int j = 0; j < branchList.length; j++) {
-                    if (branchList[j].getTotalOrder() == 0) {
-                        zeroOrderBranch.add(branchList[j]);
-                    }
-                }
-                
-                branchTakeOrder = branchList[0];
-                totalTimeProcessInc = input.getDishPrepTime(resname, dishname) + branchList[0].getProcessTimeLeft();
-                minimum = totalTimeProcessInc;
-                
-                if (zeroOrderBranch.size() == 3) {
-                    // GET SHORTEST DISTANCE
-                    distance = branchTakeOrder.getDistance(customerlocationX, customerlocationY);
-                    MinDistance = distance;
-                    
-                    for (int j = 1; j < branchList.length; j++) {
-                        distance = branchList[j].getDistance(customerlocationX, customerlocationY);
-                        if (distance < MinDistance) {
-                            branchTakeOrder = branchList[j];
-                            MinDistance = distance;
-                        }
-                    }
-                    
-                } else if (zeroOrderBranch.size() == 2) {
-                    // CHOOSE SHORTEST BETWEEN 2 
-                    branchTakeOrder = zeroOrderBranch.get(0);
-                    distance = branchTakeOrder.getDistance(customerlocationX, customerlocationY);
-                    MinDistance = distance;
-                    
-                    if (zeroOrderBranch.get(1).getDistance(customerlocationX, customerlocationY) < MinDistance) {
-                        branchTakeOrder = zeroOrderBranch.get(1);
-                        MinDistance = distance;
-                    }
-                    
-                } else {
-                    
-                    for (int j = 1; j < branchList.length; j++) {
-                        totalTimeProcessInc = input.getDishPrepTime(resname, dishname) + branchList[j].getProcessTimeLeft();
-                        if (totalTimeProcessInc < minimum) {
-                            branchTakeOrder = branchList[j];
-                            minimum = totalTimeProcessInc;
-                        }
-                    }
-                }
-                
-                deliveryTime = branchTakeOrder.getDistance(customerlocationX, customerlocationY);
+    
+    public int getDishPrepTime(String resname, String dishname) {
+        int i = 0;
+        while (i < restlist.size()) {
+            if (resname.equals(restlist.get(i).getName())) {
+                break;
             }
+            i++;
         }
-        return branchTakeOrder;
+        return restlist.get(i).getTime(dishname);
+    }
+
+    public int getShortestDeliveryTime(int customerlocationX, int customerlocationY, String resname) {
+        int i = 0;
+        while (i < restlist.size()) {
+            if (resname.equals(restlist.get(i).getName())) {
+                break;
+            }
+            i++;
+        }
+        return restlist.get(i).closestBranch(customerlocationX, customerlocationY);
+    }
+
+    public void display() {
+        System.out.println("Welcome to CrabFood. We have the following restaurants:");
+        for (int i = 0; i < restlist.size(); i++) {
+            System.out.println(restlist.get(i));
+        }
     }
     
-    public void takeOrder(Orders newOrder) {
-        Branch branchTakeOrder = determine(newOrder.getResname(), newOrder.getDishname(), newOrder.getCustomerlocationX(), newOrder.getCustomerlocationY());
-        branchTakeOrder.acceptOrder(newOrder);
-        System.out.println(newOrder.getResname() + " @ " + branchTakeOrder.getLocation() + " takes order : " + newOrder.getDishname());
+    public String getFilename() {
+        return filename;
     }
-    
-    public int getDeliveryTime(String resname, String dishname, int customerLocationX, int customerLocationY) {
-        Branch branchTakeOrder = determine(resname, dishname, customerLocationX, customerLocationY);
-        int distance = branchTakeOrder.getDistance(customerLocationX, customerLocationY);
-        return distance;
+
+
+    public ArrayList<Restaurants> getRestlist() {
+        return restlist;
+    }
+
+    public ArrayList<Branch> getBranchList() {
+        return branchlist;
     }
     
 }

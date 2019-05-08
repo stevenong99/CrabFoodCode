@@ -15,6 +15,10 @@ public class Queue<Orders> {
 
     LinkedList<Orders> list;
 
+    void clear() {
+        list.clear();
+    }
+
     public class Node {
 
         String type;

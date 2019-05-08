@@ -2,7 +2,6 @@ package crabfood;
 
 import Map.Map;
 import TextReaders.Customertxtreader;
-import TextReaders.Inputtxtreader;
 
 /**
  *
@@ -11,7 +10,8 @@ import TextReaders.Inputtxtreader;
 public class CrabFood {
 
     public static void main(String[] args) {
-        Customertxtreader customer = new Customertxtreader("Customer.txt", "Input.txt");
+        //Customertxtreader customer = new Customertxtreader("Customer.txt", "Input.txt");
+        Launcher launch = new Launcher();
     }
     
 }

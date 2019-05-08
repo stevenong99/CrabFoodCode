@@ -1,23 +1,88 @@
 package Data;
 
-public class Orders {
+import java.util.ArrayList;
 
+
+public class Orders {
+    private ArrayList<Restaurants> restlist;
     private String resname, dishname;
     private int arrivaltime, finishedcookingtime, timetakentocook, deliverytime, totaltime, timedeliveredtocustomer, customerlocationX, customerlocationY;
 
-    public Orders(int arrivaltime, String resname, String dishname, int timetakentocook, int deliverytime, int customerlocationX, int customerlocationY) {
-        this.arrivaltime = arrivaltime;
+    public Orders(String resname, String dishname, int arrivaltime, int customerlocationX, int customerlocationY, ArrayList<Restaurants> restlist) {//Restlist, dishpreptime
+        this.restlist = restlist;
         this.resname = resname;
         this.dishname = dishname;
+        this.arrivaltime = arrivaltime;
         this.customerlocationX = customerlocationX;
         this.customerlocationY = customerlocationY;
-        this.timetakentocook = timetakentocook;
-        this.finishedcookingtime = arrivaltime + timetakentocook;
-        this.deliverytime = deliverytime;
-        this.totaltime = deliverytime + timetakentocook;
-        this.timedeliveredtocustomer = totaltime + arrivaltime;
+        this.timetakentocook = getTimeTakenToCook();
+        this.finishedcookingtime = timetakentocook + arrivaltime;
+        this.deliverytime = getDeliverytime(resname,dishname,customerlocationX,customerlocationY);
+        this.totaltime = this.timetakentocook + this.deliverytime;
+        this.timedeliveredtocustomer = this.arrivaltime + this.totaltime;
     }
 
+    public int getTimeTakenToCook() {
+        ArrayList<Dishes> dishesList;
+        int preparationTime = 0;
+        for (int i = 0; i < restlist.size(); i++) {
+            if (restlist.get(i).getName().equals(resname)) {
+                dishesList = restlist.get(i).getDishes();
+                for (int j = 0; j < dishesList.size(); j++) {
+                    if (dishesList.get(j).getDishName().equals(dishname)) {
+                        preparationTime = dishesList.get(j).getPreparationTime();
+                    }
+                }
+            }
+        }
+        return preparationTime;
+    }
+
+    public Branch determine(String resname, String dishname, int customerLocationX, int customerLocationY) {
+        ArrayList<Branch> branchList;
+        int totalTimeProcessInc;            // Branch's total time left to process all orders including newOrder
+        Branch branchTakeOrder = null;
+        int minimum;
+
+        for (int i = 0; i < restlist.size(); i++) {
+            if (restlist.get(i).getName().equals(resname)) {
+                branchList = restlist.get(i).getBranches();
+
+                branchTakeOrder = branchList.get(0);
+                totalTimeProcessInc = getDishPrepTime(resname, dishname) + branchList.get(0).getProcessTimeLeft() + branchTakeOrder.getDistance(customerlocationX, customerlocationY);
+                minimum = totalTimeProcessInc;
+
+                for (int j = 1; j < branchList.size(); j++) {
+                    totalTimeProcessInc = getDishPrepTime(resname, dishname) + branchList.get(j).getProcessTimeLeft() + branchList.get(j).getDistance(customerlocationX, customerlocationY);
+                    if (totalTimeProcessInc < minimum) {
+                        branchTakeOrder = branchList.get(j);
+                        minimum = totalTimeProcessInc;
+                    }
+                }
+
+            }
+        }
+        return branchTakeOrder;
+    }
+
+    public int getDeliverytime(String resname, String dishname, int customerLocationX, int customerLocationY) {
+        int deliveryTime = 0;
+        deliveryTime = determine(resname, dishname, customerLocationX, customerLocationY).getDistance(customerLocationX, customerLocationY);
+        return deliveryTime;
+    }
+    
+    public int getDishPrepTime(String resname, String dishname) {
+        int i = 0;
+        while (i < restlist.size()) {
+            if (resname.equals(restlist.get(i).getName())) {
+                break;
+            }
+            i++;
+        }
+        return restlist.get(i).getTime(dishname);
+    }
+
+    //Getters and Setters
     public int getArrivaltime() {
         return arrivaltime;
     }
@@ -25,15 +90,7 @@ public class Orders {
     public int getFinishedcookingtime() {
         return finishedcookingtime;
     }
-
-    public int getTimetakentocook() {
-        return timetakentocook;
-    }
-
-    public int getDeliverytime() {
-        return deliverytime;
-    }
-
+    
     public int getTimedeliveredtocustomer() {
         return timedeliveredtocustomer;
     }
