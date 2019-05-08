@@ -21,26 +21,18 @@ import java.util.ArrayList;
 public class Launcher {
     protected ArrayList<Orders> ordersarr;
     protected Restaurants[] restlist;
-    protected Branch[] branchList;
     protected Map newMap;
     protected WaitLine waitLine;
     protected Customertxtreader customerTR;
-    protected Inputtxtreader inputTR;
 
     public Launcher() {
-        
         this.customerTR = new Customertxtreader("Customer.txt", "Input.txt");
         this.ordersarr = customerTR.getOrdersarr();
         this.restlist = customerTR.getRestlist();
         this.newMap = new Map(restlist);
-        this.waitLine = new WaitLine();
         Handler handler = new Handler(this);
-        
+        this.waitLine = new WaitLine(handler);
     }
-    
-    
-    
-    
     
     //Getters
 
@@ -50,10 +42,6 @@ public class Launcher {
 
     public Restaurants[] getRestlist() {
         return restlist;
-    }
-
-    public Branch[] getBranchList() {
-        return branchList;
     }
 
     public Map getNewMap() {
@@ -68,11 +56,5 @@ public class Launcher {
         return customerTR;
     }
 
-    public Inputtxtreader getInputTR() {
-        return inputTR;
-    }
-    
-    
-    
     
 }

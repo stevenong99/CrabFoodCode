@@ -49,7 +49,5 @@ public class Handler {
         return launcher.getCustomerTR();
     }
 
-    public Inputtxtreader getInputTR() {
-        return launcher.getInputTR();
-    }
+    
 }

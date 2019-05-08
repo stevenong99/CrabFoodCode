@@ -5,18 +5,24 @@
  */
 package Data;
 
+import crabfood.Handler;
+import java.util.ArrayList;
+
 /**
  *
  * @author Crimson
  */
 public class WaitLine {
-    private Queue<Orders> line;
+    private Queue<String> line;
+    private ArrayList<Orders> ordersarr;
     private int numberOfArrivals;
     private int numberServed;
     private int totalTimeWaited;
+    private Handler handler;
 
-    public WaitLine()   {
-        line = new Queue<Orders>();
+    public WaitLine(Handler handler)   {
+        this.handler = handler;
+        this.ordersarr = handler.getOrdersarr();
         reset();
     }
     
