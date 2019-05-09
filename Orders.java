@@ -6,9 +6,10 @@ import java.util.ArrayList;
 public class Orders {
     private ArrayList<Restaurants> restlist;
     private String resname, dishname;
-    private int arrivaltime, finishedcookingtime, timetakentocook, deliverytime, totaltime, timedeliveredtocustomer, customerlocationX, customerlocationY;
+    private int arrivaltime, finishedcookingtime, timetakentocook, deliverytime, totaltime, timedeliveredtocustomer, customerlocationX, customerlocationY,orderNo;
+    private Branch branchTakeOrder;
 
-    public Orders(String resname, String dishname, int arrivaltime, int customerlocationX, int customerlocationY, ArrayList<Restaurants> restlist) {//Restlist, dishpreptime
+    public Orders(String resname, String dishname, int arrivaltime, int customerlocationX, int customerlocationY, ArrayList<Restaurants> restlist,ArrayList<Orders> order) {//Restlist, dishpreptime
         this.restlist = restlist;
         this.resname = resname;
         this.dishname = dishname;
@@ -17,9 +18,31 @@ public class Orders {
         this.customerlocationY = customerlocationY;
         this.timetakentocook = getTimeTakenToCook();
         this.finishedcookingtime = timetakentocook + arrivaltime;
-        this.deliverytime = getDeliverytime(resname,dishname,customerlocationX,customerlocationY);
+        this.branchTakeOrder = determine(resname,dishname,customerlocationX,customerlocationY);
+        this.deliverytime = getDeliverytime(branchTakeOrder);
         this.totaltime = this.timetakentocook + this.deliverytime;
         this.timedeliveredtocustomer = this.arrivaltime + this.totaltime;
+        this.orderNo = order.size()+1;
+    }
+
+    public int getOrderNo() {
+        return orderNo;
+    }
+
+    public Branch getBranchTakeOrder() {
+        return branchTakeOrder;
+    }
+
+    public ArrayList<Restaurants> getRestlist() {
+        return restlist;
+    }
+
+    public int getTimetakentocook() {
+        return timetakentocook;
+    }
+
+    public int getDeliverytime() {
+        return deliverytime;
     }
 
     public int getTimeTakenToCook() {
@@ -65,9 +88,9 @@ public class Orders {
         return branchTakeOrder;
     }
 
-    public int getDeliverytime(String resname, String dishname, int customerLocationX, int customerLocationY) {
+    public int getDeliverytime(Branch branchTakeOrder) {
         int deliveryTime = 0;
-        deliveryTime = determine(resname, dishname, customerLocationX, customerLocationY).getDistance(customerLocationX, customerLocationY);
+        deliveryTime = branchTakeOrder.getDistance(customerlocationX, customerlocationY);
         return deliveryTime;
     }
     
@@ -128,7 +151,7 @@ public class Orders {
     }
 
     public String toString(int i) {
-        return "Order " + (i + 1) + "\nRestaurant name = " + resname + "\nDish name = " + dishname + "\nArrival time = " + arrivaltime
+        return "Order " + (i + 1) + "\nRestaurant name = " + resname + "\nBranch location : " + branchTakeOrder.getLocation() +"\nDish name = " + dishname + "\nArrival time = " + arrivaltime
                 + "\nFinished cooking at = " + finishedcookingtime + "\nDelivered at = " + timedeliveredtocustomer;
 
     }

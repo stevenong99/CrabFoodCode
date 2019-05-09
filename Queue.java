@@ -33,8 +33,15 @@ public class Queue<Orders> {
         list.addLast(e);
     }
 
-    public Orders dequeue() {
-        return list.removeFirst();
+    public Orders dequeue(Orders order) {
+        for (int i=0;i<list.size();i++ )
+        {
+            if (list.get(i).equals(order))
+            {
+                return list.remove(i);
+            }
+        }
+        return null;
     }
 
     public Orders getElement(int i) {
@@ -64,6 +71,10 @@ public class Queue<Orders> {
         } else {
             return false;
         }
+    }
+    
+    public int getIndex(Object o){
+        return list.indexOf(o);
     }
 
     public String toString() {
