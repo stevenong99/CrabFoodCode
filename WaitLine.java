@@ -6,7 +6,12 @@
 package Data;
 
 import crabfood.Handler;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -24,7 +29,7 @@ public class WaitLine {
     public WaitLine(Handler handler) {
         this.handler = handler;
         this.ordersarr = handler.getOrdersarr();
-        simulate(60, ordersarr);
+        simulate(ordersarr);
         //reset();
     }
 
@@ -51,7 +56,15 @@ public class WaitLine {
 //            } // end if
 //        } // end for
 //    } // end simulate
-    public void simulate(int workingHour, ArrayList<Orders> ordersarr) {
+    public void simulate(ArrayList<Orders> ordersarr) {
+        int workingHour = ordersarr.get(0).getTimedeliveredtocustomer();
+        boolean complete = false;
+
+        for (int i = 0; i < ordersarr.size(); i++) {
+            if (ordersarr.get(i).getTimedeliveredtocustomer() > workingHour) {
+                workingHour = ordersarr.get(i).getTimedeliveredtocustomer() + 1;
+            }
+        }
         for (int clock = 0; clock < workingHour; clock++) {
             if (clock == 0) {
                 System.out.println("0: A new day has start !");
@@ -69,6 +82,34 @@ public class WaitLine {
                     System.out.println("Number of orders to be processed : " + ordersarr.get(i).getBranchTakeOrder().getTotalOrder());
                 }
             }
+            for (int j = 0; j < ordersarr.size(); j++) {
+                if (ordersarr.get(j).getBranchTakeOrder().getProcessTimeLeft() == 0) {
+                    complete = true;
+                } else {
+                    complete = false;
+                }
+            }
+            if (clock == workingHour - 1 && complete == true) {
+                System.out.println(clock + ": All customers are served and shops are closed.");
+            }
+        }
+        generateLogFile(ordersarr);
+    }
+
+    public void generateLogFile(ArrayList<Orders> ordersarr) {
+        PrintWriter print = null;
+        try {
+            print = new PrintWriter(new FileOutputStream("Log.txt"));
+            print.printf("%-9s|%-8s|%-11s|%-22s|%-14s|%-11s", "Customer", "Arrival", "Order Time", "Finished Cooking Time", "Delivery Time", "Total Time");
+            print.println();
+            for (int i = 0; i < ordersarr.size(); i++) {
+                print.printf("%-16d|%-10d|%-19d|%-37d|%-23d|%-11d", ordersarr.get(i).getOrderNo(), ordersarr.get(i).getArrivaltime(), ordersarr.get(i).getArrivaltime(), ordersarr.get(i).getFinishedcookingtime(), ordersarr.get(i).getDeliverytime(), ordersarr.get(i).getTotaltime());
+                print.println();
+            }
+        } catch (FileNotFoundException ex) {
+            System.out.println("File is not found!");
+        } finally {
+            print.close();
         }
     }
 
