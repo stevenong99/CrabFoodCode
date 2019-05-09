@@ -32,39 +32,18 @@ public class WaitLine {
         simulate(ordersarr);
         //reset();
     }
-
-//    public void simulate(int duration, double arrivalProbability, int maxTransactionTime) {
-//        int transactionTimeLeft = 0;
-//        for (int clock = 0; clock < duration; clock++)  {
-//            if (Math.random() < arrivalProbability) {
-//                numberOfArrivals++;
-//                int transactionTime = (int)(Math.random()* maxTransactionTime + 1);
-//                Orders nextArrival = new Orders(clock, transactionTime,numberOfArrivals);
-//                line.enqueue(nextArrival);
-//                System.out.println("Customer " + numberOfArrivals + " enters line at time " + clock + ". Transaction time is " + transactionTime);
-//            } // end if
-//
-//            if (transactionTimeLeft > 0)
-//                transactionTimeLeft--;
-//            else if (!line.isEmpty())   {
-//                Orders nextCustomer = line.dequeue();
-//                transactionTimeLeft = nextCustomer.getTransactionTime() - 1;
-//                int timeWaited = clock - nextCustomer.getArrivalTime();
-//                totalTimeWaited = totalTimeWaited + timeWaited;
-//                numberServed++;
-//                System.out.println("Customer " + nextCustomer.getCustomerNumber() + " begins service at time " + clock + ". Time waited is " + timeWaited);
-//            } // end if
-//        } // end for
-//    } // end simulate
+    
     public void simulate(ArrayList<Orders> ordersarr) {
+        System.out.println("");
         int workingHour = ordersarr.get(0).getTimedeliveredtocustomer();
         boolean complete = false;
 
         for (int i = 0; i < ordersarr.size(); i++) {
             if (ordersarr.get(i).getTimedeliveredtocustomer() > workingHour) {
-                workingHour = ordersarr.get(i).getTimedeliveredtocustomer() + 1;
+                workingHour = ordersarr.get(i).getTimedeliveredtocustomer();
             }
         }
+        workingHour++;
         for (int clock = 0; clock < workingHour; clock++) {
             if (clock == 0) {
                 System.out.println("0: A new day has start !");
@@ -73,13 +52,13 @@ public class WaitLine {
                 if (ordersarr.get(i).getArrivaltime() == clock) {
                     System.out.println(clock + ": Customer " + (ordersarr.indexOf(ordersarr.get(i)) + 1) + " wants to order " + ordersarr.get(i).getDishname() + " from " + ordersarr.get(i).getResname() + ".");
                     System.out.println(clock + ": Branch of " + ordersarr.get(i).getResname() + " at " + ordersarr.get(i).getBranchTakeOrder().getLocation() + " takes the order.");
-                    System.out.println("Number of orders to be processed : " + ordersarr.get(i).getBranchTakeOrder().getTotalOrder());
+                    //System.out.println("Number of orders to be processed : " + ordersarr.get(i).getBranchTakeOrder().getTotalOrder());
                 } else if (ordersarr.get(i).getFinishedcookingtime() == clock) {
                     System.out.println(clock + ": Branch of " + ordersarr.get(i).getResname() + " at " + ordersarr.get(i).getBranchTakeOrder().getLocation() + " finished the order and starts delivering the food to customer.");
                 } else if (ordersarr.get(i).getTimedeliveredtocustomer() == clock) {
                     System.out.println(clock + ": The food have been delivered to customer " + (ordersarr.indexOf(ordersarr.get(i)) + 1) + ".");
                     ordersarr.get(i).getBranchTakeOrder().completeOrder(ordersarr.get(i));
-                    System.out.println("Number of orders to be processed : " + ordersarr.get(i).getBranchTakeOrder().getTotalOrder());
+                    //System.out.println("Number of orders to be processed : " + ordersarr.get(i).getBranchTakeOrder().getTotalOrder());
                 }
             }
             for (int j = 0; j < ordersarr.size(); j++) {

@@ -100,7 +100,7 @@ public class Customertxtreader {
     
     public void takeOrder(String restName, String dishName, int arrivalTime, int customerLocationX, int customerLocationY) {
         Orders newOrder = new Orders(restName, dishName, arrivalTime, customerLocationX, customerLocationY, restlist,ordersarr);
-        Branch branchTakeOrder = newOrder.determine(restName, dishName, customerLocationX, customerLocationY);
+        Branch branchTakeOrder = newOrder.getBranchTakeOrder();
         ordersarr.add(newOrder);
         branchTakeOrder.acceptOrder(newOrder);
     }

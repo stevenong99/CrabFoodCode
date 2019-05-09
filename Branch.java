@@ -71,6 +71,9 @@ public class Branch {
     public Queue<Orders> getOrderList() {
         return orderList;
     }
+    public int getOrderListSize(){
+        return orderList.getSize();
+    }
 
     @Override
     public String toString() {

@@ -2,14 +2,14 @@ package Data;
 
 import java.util.ArrayList;
 
-
 public class Orders {
+
     private ArrayList<Restaurants> restlist;
     private String resname, dishname;
-    private int arrivaltime, finishedcookingtime, timetakentocook, deliverytime, totaltime, timedeliveredtocustomer, customerlocationX, customerlocationY,orderNo;
+    private int arrivaltime, finishedcookingtime, timetakentocook, deliverytime, totaltime, timedeliveredtocustomer, customerlocationX, customerlocationY, orderNo;
     private Branch branchTakeOrder;
 
-    public Orders(String resname, String dishname, int arrivaltime, int customerlocationX, int customerlocationY, ArrayList<Restaurants> restlist,ArrayList<Orders> order) {//Restlist, dishpreptime
+    public Orders(String resname, String dishname, int arrivaltime, int customerlocationX, int customerlocationY, ArrayList<Restaurants> restlist, ArrayList<Orders> order) {//Restlist, dishpreptime
         this.restlist = restlist;
         this.resname = resname;
         this.dishname = dishname;
@@ -18,11 +18,11 @@ public class Orders {
         this.customerlocationY = customerlocationY;
         this.timetakentocook = getTimeTakenToCook();
         this.finishedcookingtime = timetakentocook + arrivaltime;
-        this.branchTakeOrder = determine(resname,dishname,customerlocationX,customerlocationY);
+        this.branchTakeOrder = determine(resname, dishname, customerlocationX, customerlocationY);
         this.deliverytime = getDeliverytime(branchTakeOrder);
         this.totaltime = this.timetakentocook + this.deliverytime;
         this.timedeliveredtocustomer = this.arrivaltime + this.totaltime;
-        this.orderNo = order.size()+1;
+        this.orderNo = order.size() + 1;
     }
 
     public int getOrderNo() {
@@ -73,10 +73,20 @@ public class Orders {
 
                 branchTakeOrder = branchList.get(0);
                 totalTimeProcessInc = getDishPrepTime(resname, dishname) + branchList.get(0).getProcessTimeLeft() + branchTakeOrder.getDistance(customerlocationX, customerlocationY);
+                for (int k = 0; k < branchTakeOrder.getOrderListSize(); k++) {
+                    if (arrivaltime >= branchTakeOrder.getOrderList().getElement(k).timedeliveredtocustomer) {
+                        totalTimeProcessInc = totalTimeProcessInc - branchTakeOrder.getOrderList().getElement(k).timedeliveredtocustomer;
+                    }
+                }
                 minimum = totalTimeProcessInc;
 
                 for (int j = 1; j < branchList.size(); j++) {
                     totalTimeProcessInc = getDishPrepTime(resname, dishname) + branchList.get(j).getProcessTimeLeft() + branchList.get(j).getDistance(customerlocationX, customerlocationY);
+                    for (int k = 0; k < branchList.get(j).getOrderListSize(); k++) {
+                        if (arrivaltime >= branchList.get(j).getOrderList().getElement(k).timedeliveredtocustomer) {
+                            totalTimeProcessInc = totalTimeProcessInc - branchList.get(j).getOrderList().getElement(k).timedeliveredtocustomer;
+                        }
+                    }
                     if (totalTimeProcessInc < minimum) {
                         branchTakeOrder = branchList.get(j);
                         minimum = totalTimeProcessInc;
@@ -93,7 +103,7 @@ public class Orders {
         deliveryTime = branchTakeOrder.getDistance(customerlocationX, customerlocationY);
         return deliveryTime;
     }
-    
+
     public int getDishPrepTime(String resname, String dishname) {
         int i = 0;
         while (i < restlist.size()) {
@@ -113,7 +123,7 @@ public class Orders {
     public int getFinishedcookingtime() {
         return finishedcookingtime;
     }
-    
+
     public int getTimedeliveredtocustomer() {
         return timedeliveredtocustomer;
     }
@@ -151,7 +161,7 @@ public class Orders {
     }
 
     public String toString(int i) {
-        return "Order " + (i + 1) + "\nRestaurant name = " + resname + "\nBranch location : " + branchTakeOrder.getLocation() +"\nDish name = " + dishname + "\nArrival time = " + arrivaltime
+        return "Order " + (i + 1) + "\nRestaurant name = " + resname + "\nBranch location : " + branchTakeOrder.getLocation() + "\nDish name = " + dishname + "\nArrival time = " + arrivaltime
                 + "\nFinished cooking at = " + finishedcookingtime + "\nDelivered at = " + timedeliveredtocustomer;
 
     }
