@@ -55,14 +55,15 @@ public class WaitLine {
         for (int clock = 0; clock < workingHour; clock++) {
             for (int i = 0; i < ordersarr.size(); i++) {
                 if (ordersarr.get(i).getArrivaltime() == clock) {
-                    System.out.println(clock + ": Customer " + (ordersarr.indexOf(ordersarr.get(i)) + 1) + " wants to order " + ordersarr.get(i).getDishname() + " from " + ordersarr.get(i).getResname()+".");
+                    System.out.println(clock + ": Customer " + (ordersarr.indexOf(ordersarr.get(i)) + 1) + " wants to order " + ordersarr.get(i).getDishname() + " from " + ordersarr.get(i).getResname() + ".");
                     System.out.println(clock + ": Branch of " + ordersarr.get(i).getResname() + " at " + ordersarr.get(i).getBranchTakeOrder().getLocation() + " takes the order.");
-                    //ordersarr.get(i).getBranchTakeOrder().acceptOrder(ordersarr.get(i));
+                    System.out.println("Number of orders to be processed : " + ordersarr.get(i).getBranchTakeOrder().getTotalOrder());
                 } else if (ordersarr.get(i).getFinishedcookingtime() == clock) {
-                    System.out.println(clock + ": Branch of " + ordersarr.get(i).getResname() + " at " + ordersarr.get(i).getBranchTakeOrder().getLocation() + " finish the order and delivery the food to customer.");
+                    System.out.println(clock + ": Branch of " + ordersarr.get(i).getResname() + " at " + ordersarr.get(i).getBranchTakeOrder().getLocation() + " finished the order and starts delivering the food to customer.");
                 } else if (ordersarr.get(i).getTimedeliveredtocustomer() == clock) {
                     System.out.println(clock + ": The food have been delivered to customer " + (ordersarr.indexOf(ordersarr.get(i)) + 1) + ".");
-                    //ordersarr.get(i).getBranchTakeOrder().completeOrder();
+                    ordersarr.get(i).getBranchTakeOrder().completeOrder(ordersarr.get(i));
+                    System.out.println("Number of orders to be processed : " + ordersarr.get(i).getBranchTakeOrder().getTotalOrder());
                 }
             }
         }

@@ -31,11 +31,11 @@ public class Branch {
         this.ProcessTimeLeft = ProcessTimeLeft + newOrder.getTotaltime();
     }
 
-//    public void completeOrder() {
-//        orderList.dequeue();
-//        totalOrder--;
-//        this.ProcessTimeLeft = ProcessTimeLeft - orderList.dequeue().getTotaltime();
-//    }
+    public void completeOrder(Orders order) {
+        this.ProcessTimeLeft = ProcessTimeLeft - orderList.dequeue(order).getTotaltime();
+        orderList.dequeue(order);
+        totalOrder--;
+    }
 
     public int getTotalOrder() {
         return totalOrder;

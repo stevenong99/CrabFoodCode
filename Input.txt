@@ -30,3 +30,29 @@ Fish Sandwich
 20
 Twisty Lard
 20
+
+Dosneyland
+10 8
+5 14
+25 5
+17 10
+13 13
+Mini Mics
+10
+Boasted Duck
+20
+Premium Hotdogs
+35
+
+Area 76
+5 10
+14 14
+22 3
+16 1
+22 12
+Rayduck
+25
+Green Beef
+20
+Blue Apples
+10
