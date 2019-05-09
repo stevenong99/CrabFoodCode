@@ -53,6 +53,9 @@ public class WaitLine {
 //    } // end simulate
     public void simulate(int workingHour, ArrayList<Orders> ordersarr) {
         for (int clock = 0; clock < workingHour; clock++) {
+            if (clock == 0) {
+                System.out.println("0: A new day has start !");
+            }
             for (int i = 0; i < ordersarr.size(); i++) {
                 if (ordersarr.get(i).getArrivaltime() == clock) {
                     System.out.println(clock + ": Customer " + (ordersarr.indexOf(ordersarr.get(i)) + 1) + " wants to order " + ordersarr.get(i).getDishname() + " from " + ordersarr.get(i).getResname() + ".");
