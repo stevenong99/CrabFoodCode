@@ -90,9 +90,10 @@ public class Customertxtreader {
         }
         
         info = text.split(";");
-        for (int i = 0; i < info.length; i += 4) {
+        for (int i = 0; i < info.length; i += 5) {
             String resname = info[i + 1], dishname = info[i + 2];
-            int customerlocationX = 0, customerlocationY = 0;
+            String[] customerlocation = (info[i+3]).split(" ");
+            int customerlocationX = Integer.parseInt(customerlocation[0]), customerlocationY = Integer.parseInt(customerlocation[1]);
             int arrivaltime = Integer.parseInt(info[i]);
             takeOrder(resname, dishname, arrivaltime, customerlocationX, customerlocationY);
         }
