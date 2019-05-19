@@ -5,7 +5,7 @@
  */
 package Data;
 
-import crabfood.Handler;
+import Graphics.Handler;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
@@ -54,7 +54,7 @@ public class WaitLine {
                     System.out.println(clock + ": Branch of " + ordersarr.get(i).getResname() + " at " + ordersarr.get(i).getBranchTakeOrder().getLocation() + " takes the order.");
                     //System.out.println("Number of orders to be processed : " + ordersarr.get(i).getBranchTakeOrder().getTotalOrder());
                 } else if (ordersarr.get(i).getFinishedcookingtime() == clock) {
-                    System.out.println(clock + ": Branch of " + ordersarr.get(i).getResname() + " at " + ordersarr.get(i).getBranchTakeOrder().getLocation() + " finished the order and starts delivering the food to customer.");
+                    System.out.println(clock + ": Branch of " + ordersarr.get(i).getResname() + " at " + ordersarr.get(i).getBranchTakeOrder().getLocation() + " finished the order and starts delivering the food to customer " + (ordersarr.indexOf(ordersarr.get(i)) + 1) + ".");
                 } else if (ordersarr.get(i).getTimedeliveredtocustomer() == clock) {
                     System.out.println(clock + ": The food have been delivered to customer " + (ordersarr.indexOf(ordersarr.get(i)) + 1) + ".");
                     ordersarr.get(i).getBranchTakeOrder().completeOrder(ordersarr.get(i));

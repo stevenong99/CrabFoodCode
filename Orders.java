@@ -61,7 +61,7 @@ public class Orders {
         return preparationTime;
     }
 
-    public Branch determine(String resname, String dishname, int customerLocationX, int customerLocationY) {
+    public Branch determine(String resname, String dishname, int customerLocationX, int customerLocationY) { //Determines which branch will take the order
         ArrayList<Branch> branchList;
         int totalTimeProcessInc;            // Branch's total time left to process all orders including newOrder
         Branch branchTakeOrder = null;

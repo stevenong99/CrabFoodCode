@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package crabfood;
+package Graphics;
 
+import Graphics.GUIMain;
 import Data.Branch;
 import Data.Orders;
 import Data.Restaurants;
@@ -12,6 +13,8 @@ import Data.WaitLine;
 import Map.Map;
 import TextReaders.Customertxtreader;
 import java.util.ArrayList;
+import javafx.application.Application;
+import javafx.event.ActionEvent;
 
 /**
  *
@@ -23,13 +26,15 @@ public class Launcher {
     protected Map newMap;
     protected WaitLine waitLine;
     protected Customertxtreader customerTR;
+    protected Handler handler;
+    private String[] args;
 
     public Launcher() {
         this.customerTR = new Customertxtreader("Customer.txt", "Input2.txt");
         this.ordersarr = customerTR.getOrdersarr();
         this.restlist = customerTR.getRestlist();
         this.newMap = new Map(restlist);
-        Handler handler = new Handler(this);
+        this.handler = new Handler(this);
         this.waitLine = new WaitLine(handler);
     }
     
@@ -43,8 +48,6 @@ public class Launcher {
         return restlist;
     }
 
-
-
     public Map getNewMap() {
         return newMap;
     }
@@ -56,6 +59,14 @@ public class Launcher {
     public Customertxtreader getCustomerTR() {
         return customerTR;
     }
+
+    public Handler getHandler() {
+        return handler;
+    }
+    
+    
+    
+    
 
     
 }
