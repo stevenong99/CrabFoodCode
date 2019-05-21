@@ -8,23 +8,14 @@ public class Restaurants {
     private ArrayList<Branch> branches;
     private ArrayList<Dishes> dishes;
     private int numberofbranches;
-
-//    public Restaurants(String name, int[][] branch, Dishes[] dishes) {
-//        this.name = name;
-//        this.branch = branch;
-//        this.dishes = dishes;
-//        this.numberofbranches = 3;
-//        for (int i = 0; i < 3; i++) {
-//            newBranch = new Branch(branch[i][0], branch[i][1]);
-//            System.out.println(newBranch.toString());
-//        }
-//    }
+    private int totalIncome;
 
     public Restaurants(String name, ArrayList<Branch> branches, ArrayList<Dishes> dishes) {
         this.name = name;
         this.branches = branches;
         this.dishes = dishes;
         this.numberofbranches = 3;
+        this.totalIncome = 0;
     }
     
     @Override
@@ -39,6 +30,14 @@ public class Restaurants {
         return name + " located at " + branches + "\n"+ "It provides the following meals:\n" + DishesServed();
     }
 
+    public int getTotalIncome() {
+        return totalIncome;
+    }
+
+    public void setTotalIncome(int totalIncome) {
+        this.totalIncome = this.totalIncome + totalIncome;
+    }
+    
     public String DishesServed() {
         String output = "";
         for (int i = 0; i < this.dishes.size(); i++) {

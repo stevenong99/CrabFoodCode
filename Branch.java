@@ -16,6 +16,7 @@ public class Branch {
     private int totalOrder;
     private Queue<Orders> orderList;
     private int ProcessTimeLeft;
+    private int totalProfit;
 
     public Branch(int x, int y) {
         CoordinateX = x;
@@ -23,12 +24,18 @@ public class Branch {
         this.totalOrder = 0;
         this.orderList = new Queue<>();
         this.ProcessTimeLeft = 0;
+        this.totalProfit = 0;
     }
 
     public void acceptOrder(Orders newOrder) {
         orderList.enqueue(newOrder);
+        totalProfit = totalProfit + newOrder.getProfit();
         totalOrder++;
         this.ProcessTimeLeft = ProcessTimeLeft + newOrder.getTotaltime();
+    }
+
+    public int getTotalProfit() {
+        return totalProfit;
     }
 
     public void completeOrder(Orders order) {

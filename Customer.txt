@@ -1,16 +1,18 @@
 0
 Burger Krusty
 The Klogger
+No sauce
 0 0
 
 13
 Crusty Crab
-Crabby Meal
+Sailors Surprise
 2 5
 
 15
 Crusty Crab
 Crabby Meal
+Extra sauce
 5 11
 
 15
@@ -20,15 +22,25 @@ Phum Pie
 
 21
 Burger Krusty
-The Klogger
+Fish Sandwich
 1 2
 
 23
 Phum Bucket
-Phum Pie
+Phum Fries
 3 4
 
 27
 Area 76
-Rayduck
+Green Beef
 5 6
+
+28
+Burger Krusty
+The Klogger
+0 0
+
+28
+Burger Krusty
+The Klogger
+0 0

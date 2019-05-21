@@ -5,11 +5,12 @@ import java.util.ArrayList;
 public class Orders {
 
     private ArrayList<Restaurants> restlist;
-    private String resname, dishname;
+    private String resname, dishname,specialreq;
     private int arrivaltime, finishedcookingtime, timetakentocook, deliverytime, totaltime, timedeliveredtocustomer, customerlocationX, customerlocationY, orderNo;
     private Branch branchTakeOrder;
+    private int profit;
 
-    public Orders(String resname, String dishname, int arrivaltime, int customerlocationX, int customerlocationY, ArrayList<Restaurants> restlist, ArrayList<Orders> order) {//Restlist, dishpreptime
+    public Orders(String resname, String dishname, int arrivaltime, int customerlocationX, int customerlocationY, ArrayList<Restaurants> restlist, ArrayList<Orders> order,String specialreq) {//Restlist, dishpreptime
         this.restlist = restlist;
         this.resname = resname;
         this.dishname = dishname;
@@ -23,6 +24,12 @@ public class Orders {
         this.totaltime = this.timetakentocook + this.deliverytime;
         this.timedeliveredtocustomer = this.arrivaltime + this.totaltime;
         this.orderNo = order.size() + 1;
+        this.specialreq = specialreq;
+        this.profit = getProfit();
+    }
+
+    public String getSpecialreq() {
+        return specialreq;
     }
 
     public int getOrderNo() {
@@ -45,6 +52,24 @@ public class Orders {
         return deliverytime;
     }
 
+    public int getProfit() {
+        ArrayList<Dishes> dishesList;
+        int profit = 0;
+        for (int i = 0; i < restlist.size(); i++) {
+            if (restlist.get(i).getName().equals(resname)) {
+                dishesList = restlist.get(i).getDishes();
+                for (int j = 0; j < dishesList.size(); j++) {
+                    if (dishesList.get(j).getDishName().equals(dishname)) {
+                        profit = profit + dishesList.get(j).getPrice();
+                    }
+                }
+            }
+        }
+        return profit;
+    }
+
+    
+    
     public int getTimeTakenToCook() {
         ArrayList<Dishes> dishesList;
         int preparationTime = 0;
@@ -162,7 +187,7 @@ public class Orders {
 
     public String toString(int i) {
         return "Order " + (i + 1) + "\nRestaurant name = " + resname + "\nBranch location : " + branchTakeOrder.getLocation() + "\nDish name = " + dishname + "\nArrival time = " + arrivaltime
-                + "\nFinished cooking at = " + finishedcookingtime + "\nDelivered at = " + timedeliveredtocustomer;
+                + "\nFinished cooking at = " + finishedcookingtime + "\nDelivered at = " + timedeliveredtocustomer + "\nTotal Price : RM " + profit;
 
     }
 

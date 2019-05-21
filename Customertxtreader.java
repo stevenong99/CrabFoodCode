@@ -10,6 +10,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Customertxtreader {
     
@@ -36,6 +38,9 @@ public class Customertxtreader {
         try {
             Scanner scan = new Scanner(new FileInputStream(filename));
             restlist = new ArrayList<>();
+            String dishName;
+            int prepTime;
+            int price;
             Dishes newDishes;
             
             while (scan.hasNext()) {
@@ -44,17 +49,20 @@ public class Customertxtreader {
                     int[][] branches = new int[1][2];
                     branchlist = new ArrayList<>();
                     
-                    while (scan.hasNextInt()==true)
-                    {
+                    while (scan.hasNextInt() == true) {
                         branches[0][0] = scan.nextInt();
                         branches[0][1] = scan.nextInt();
-                        branchlist.add(new Branch (branches[0][0],branches[0][1]));
+                        branchlist.add(new Branch(branches[0][0], branches[0][1]));
                         scan.nextLine();
                     }
                     
                     disheslist = new ArrayList<>();
                     for (int i = 0; i < 3; i++) {
-                        newDishes = new Dishes(scan.nextLine(), scan.nextInt());
+                        dishName = scan.nextLine();
+                        prepTime = scan.nextInt();
+                        scan.nextLine();
+                        price = scan.nextInt();
+                        newDishes = new Dishes(dishName, prepTime, price);
                         disheslist.add(newDishes);
                         if (scan.hasNextLine()) {
                             scan.nextLine();
@@ -77,33 +85,45 @@ public class Customertxtreader {
     }
     
     public void extractCustomer(String file) {
-        String[] info;
-        String text = "";
-        
         try {
-            Scanner s = new Scanner(new FileInputStream(customerfilename));
-            while (s.hasNextLine()) {
-                text = text + s.nextLine() + ";";
+            Scanner s = new Scanner(new FileInputStream(file));
+            String resname, dishname, specialreq = null;
+            int customerlocationX, customerlocationY, arrivalTime;
+            
+            while (s.hasNext()) {
+                arrivalTime = s.nextInt();
+                s.nextLine();
+                resname = s.nextLine();
+                dishname = s.nextLine();
+                if (s.hasNextInt() == false) {
+                    specialreq = s.nextLine();
+                    
+                }
+                customerlocationX = s.nextInt();
+                customerlocationY = s.nextInt();
+                takeOrder(resname, dishname, arrivalTime, customerlocationX, customerlocationY, specialreq);
+                specialreq = null;
+                if (s.hasNextLine()) {
+                    s.nextLine();
+                }
             }
         } catch (FileNotFoundException ex) {
-            System.out.println("File not found.");
-        }
-        
-        info = text.split(";");
-        for (int i = 0; i < info.length; i += 5) {
-            String resname = info[i + 1], dishname = info[i + 2];
-            String[] customerlocation = (info[i+3]).split(" ");
-            int customerlocationX = Integer.parseInt(customerlocation[0]), customerlocationY = Integer.parseInt(customerlocation[1]);
-            int arrivaltime = Integer.parseInt(info[i]);
-            takeOrder(resname, dishname, arrivaltime, customerlocationX, customerlocationY);
+            System.out.println("File is not found !");
         }
     }
     
-    public void takeOrder(String restName, String dishName, int arrivalTime, int customerLocationX, int customerLocationY) {
-        Orders newOrder = new Orders(restName, dishName, arrivalTime, customerLocationX, customerLocationY, restlist,ordersarr);
+
+    
+    public void takeOrder(String restName, String dishName, int arrivalTime, int customerLocationX, int customerLocationY, String specialreq) {
+        Orders newOrder = new Orders(restName, dishName, arrivalTime, customerLocationX, customerLocationY, restlist, ordersarr, specialreq);
         Branch branchTakeOrder = newOrder.getBranchTakeOrder();
         ordersarr.add(newOrder);
         branchTakeOrder.acceptOrder(newOrder);
+        for (int i = 0; i < restlist.size(); i++) {
+            if (restlist.get(i).getName().equals(restName)) {
+                restlist.get(i).setTotalIncome(newOrder.getProfit());
+            }
+        }
     }
     
     public ArrayList<Orders> getOrdersarr() {
@@ -126,7 +146,7 @@ public class Customertxtreader {
         }
         return restlist.get(i).getTime(dishname);
     }
-
+    
     public int getShortestDeliveryTime(int customerlocationX, int customerlocationY, String resname) {
         int i = 0;
         while (i < restlist.size()) {
@@ -137,7 +157,7 @@ public class Customertxtreader {
         }
         return restlist.get(i).closestBranch(customerlocationX, customerlocationY);
     }
-
+    
     public void display() {
         System.out.println("Welcome to CrabFood. We have the following restaurants:");
         for (int i = 0; i < restlist.size(); i++) {
@@ -148,12 +168,11 @@ public class Customertxtreader {
     public String getFilename() {
         return filename;
     }
-
-
+    
     public ArrayList<Restaurants> getRestlist() {
         return restlist;
     }
-
+    
     public ArrayList<Branch> getBranchList() {
         return branchlist;
     }

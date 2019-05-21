@@ -25,14 +25,18 @@ public class WaitLine {
     private int numberServed;
     private int totalTimeWaited;
     private Handler handler;
+    private ArrayList<Restaurants> restlist;
 
     public WaitLine(Handler handler) {
         this.handler = handler;
         this.ordersarr = handler.getOrdersarr();
+        this.restlist = handler.getRestlist();
         simulate(ordersarr);
+        System.out.println("");
+        generateSales(restlist);
         //reset();
     }
-    
+
     public void simulate(ArrayList<Orders> ordersarr) {
         System.out.println("");
         int workingHour = ordersarr.get(0).getTimedeliveredtocustomer();
@@ -50,7 +54,12 @@ public class WaitLine {
             }
             for (int i = 0; i < ordersarr.size(); i++) {
                 if (ordersarr.get(i).getArrivaltime() == clock) {
-                    System.out.println(clock + ": Customer " + (ordersarr.indexOf(ordersarr.get(i)) + 1) + " wants to order " + ordersarr.get(i).getDishname() + " from " + ordersarr.get(i).getResname() + ".");
+                    if (ordersarr.get(i).getSpecialreq() != null) {
+                        System.out.println(clock + ": Customer " + (ordersarr.indexOf(ordersarr.get(i)) + 1) + " wants to order " + ordersarr.get(i).getDishname() + " (" + ordersarr.get(i).getSpecialreq() + ") from " + ordersarr.get(i).getResname() + ".");
+                    } else {
+                        System.out.println(clock + ": Customer " + (ordersarr.indexOf(ordersarr.get(i)) + 1) + " wants to order " + ordersarr.get(i).getDishname() + " from " + ordersarr.get(i).getResname() + ".");
+                    }
+
                     System.out.println(clock + ": Branch of " + ordersarr.get(i).getResname() + " at " + ordersarr.get(i).getBranchTakeOrder().getLocation() + " takes the order.");
                     //System.out.println("Number of orders to be processed : " + ordersarr.get(i).getBranchTakeOrder().getTotalOrder());
                 } else if (ordersarr.get(i).getFinishedcookingtime() == clock) {
@@ -73,6 +82,17 @@ public class WaitLine {
             }
         }
         generateLogFile(ordersarr);
+    }
+
+    public void generateSales(ArrayList<Restaurants> restlist) {
+        for (int i = 0; i < restlist.size(); i++) {
+            for (int j = 0; j < restlist.get(i).getBranches().size(); j++) {
+                System.out.println("Branch at " + restlist.get(i).getBranches().get(j).getLocation() + " earns RM " + restlist.get(i).getBranches().get(j).getTotalProfit());
+            }
+            System.out.println("--------------------------------------------------------------------------");
+            System.out.println(restlist.get(i).getName() + " earns total of RM " + restlist.get(i).getTotalIncome());
+            System.out.println("--------------------------------------------------------------------------\n");
+        }
     }
 
     public void generateLogFile(ArrayList<Orders> ordersarr) {
